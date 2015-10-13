@@ -1,2 +1,2 @@
 # fac-hack
-A web application that encourages collaboration idea sharing 
+A web application that encourages collaboration through idea sharing 
