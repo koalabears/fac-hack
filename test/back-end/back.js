@@ -26,7 +26,7 @@ serveTest('/', function(res, t) {
 function statusTest(code) {
   return function(res, t) {
     t.equal(res.statusCode, code, "str");
-  }
+  };
 }
 
 serveTest('/', statusTest(200));
