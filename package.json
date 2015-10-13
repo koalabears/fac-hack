@@ -1,0 +1,24 @@
+{
+  "name": "fac-hack",
+  "version": "1.0.0",
+  "description": "A web application that encourages collaboration idea sharing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koalabears/fac-hack.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/koalabears/fac-hack/issues"
+  },
+  "homepage": "https://github.com/koalabears/fac-hack#readme",
+  "devDependencies": {
+    "istanbul": "^0.3.22",
+    "shot": "^1.7.0",
+    "tape": "^4.2.1"
+  }
+}
