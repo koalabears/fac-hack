@@ -18,9 +18,13 @@
   "homepage": "https://github.com/koalabears/fac-hack#readme",
   "devDependencies": {
     "istanbul": "^0.3.22",
+    "pre-commit": "^1.1.1",
     "shot": "^1.7.0",
     "tape": "^4.2.1"
   },
+  "pre-commit": [
+    "test"
+  ],
   "dependencies": {
     "hiredis": "^0.4.1",
     "redis": "^2.2.1"
