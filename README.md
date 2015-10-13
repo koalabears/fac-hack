@@ -1,4 +1,5 @@
 # fac-hack
+[![bitHound Score](https://www.bithound.io/github/koalabears/fac-hack/badges/score.svg)](https://www.bithound.io/github/koalabears/fac-hack)
 
 
 >A web application that encourages collaboration through idea sharing.
