@@ -36,11 +36,8 @@ function postDataAsHash(dbKey, data, callback) {
 }
 
 function deleteLastQuestion(callback) {
-  console.log('deleteLastQuestion called');
   client.DECR('questionId', function(err, id) {
-    console.log('dec callback');
     client.del('questionId' + (id+1), function(err, num) {
-      console.log('number deleted: ',num);
       callback()
     });
   })
