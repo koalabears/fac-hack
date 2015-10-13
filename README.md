@@ -15,12 +15,12 @@ Heroku link: http://guarded-island-6167.herokuapp.com/
 3. Install heroku-toolkit 
 4. Deploy to Heroku
 
-### Dependencies
+#### Dependencies
 
 Redis
 Hiredis
 
-### devDependencies
+#### devDependencies
 
 Istanbul
 Shot
