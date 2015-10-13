@@ -18,13 +18,13 @@ Heroku link: http://guarded-island-6167.herokuapp.com/
 
 #### Dependencies
 
-Redis
+Redis  
 Hiredis
 
 #### devDependencies
 
-Istanbul
-Shot
+Istanbul  
+Shot  
 Tape
 
 
