@@ -20,5 +20,9 @@
     "istanbul": "^0.3.22",
     "shot": "^1.7.0",
     "tape": "^4.2.1"
+  },
+  "dependencies": {
+    "hiredis": "^0.4.1",
+    "redis": "^2.2.1"
   }
 }
