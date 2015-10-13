@@ -1,7 +1,7 @@
 var shot = require('shot');
 var fs = require('fs');
 var test = require('tape');
-var handler = require('./../../server/handler.js')
+var handler = require('./../../server/handler.js');
 
 console.log(typeof handler);
 
