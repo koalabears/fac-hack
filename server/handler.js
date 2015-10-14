@@ -36,7 +36,7 @@ var getToken = function(code, callback){
   console.log('getToken called');
   console.log('code', code, '*******');
   console.log('p env', process.env);
-  var postData = '?client_id=' + process.env.clientId +
+  var postData = 'client_id=' + process.env.clientId +
     '&client_secret=' + process.env.clientSecret + '&code=' + code;
   var options = {
     hostname: 'github.com',
