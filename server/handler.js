@@ -19,7 +19,9 @@ var handler = function(req, res){
     });
     res.end();
   } else if(url.match(/^(\/auth\/)/)) {
+    console.log('inside auth endpoint in handler');
       getToken(urlArray[2].split('=')[1], function(data){
+        console.log('now in final callback!!');
         res.end(data);
       });
   } else {
@@ -31,12 +33,13 @@ var handler = function(req, res){
 };
 
 var getToken = function(code, callback){
+  console.log('getToken called');
   var options = {
-    hostname: 'github.com',
-    port: 443,
+    hostname: 'https://github.com',
+    port: 80,
     path: '/login/oauth/access_token?client_id=' + process.env.clientId +
       '&client_secret=' + process.env.clientSecret + '&code=' + code,
-    method: 'GET'
+    method: 'POST'
   };
   var req = http.request(options, function(res){
     console.log('We have a reponce from github!');
@@ -49,6 +52,7 @@ var getToken = function(code, callback){
       callback(body);
     });
   });
+  req.write('');
   req.end();
 };
 
