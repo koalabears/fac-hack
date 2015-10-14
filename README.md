@@ -13,7 +13,7 @@ Heroku link: http://guarded-island-6167.herokuapp.com/
 
 1. Server - get it running (node.js)
 2. install redis
-3. Install heroku-toolkit 
+3. Install heroku-toolkit
 4. Deploy to Heroku
 
 #### Dependencies
@@ -26,5 +26,3 @@ Hiredis
 Istanbul  
 Shot  
 Tape
-
-
