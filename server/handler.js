@@ -34,13 +34,14 @@ var handler = function(req, res){
 
 var getToken = function(code, callback){
   console.log('getToken called');
-  console.log('code', code);
+  console.log('code', code, '*******');
   console.log('p env', process.env);
+  var postData = '?client_id=' + process.env.clientId +
+    '&client_secret=' + process.env.clientSecret + '&code=' + code;
   var options = {
-    hostname: 'https://github.com',
+    hostname: 'github.com',
     port: 80,
-    path: '/login/oauth/access_token?client_id=' + process.env.clientId +
-      '&client_secret=' + process.env.clientSecret + '&code=' + code,
+    path: '/login/oauth/access_token' ,
     method: 'POST'
   };
   var req = http.request(options, function(res){
@@ -54,7 +55,11 @@ var getToken = function(code, callback){
       callback(body);
     });
   });
-  req.write('');
+  req.on('error', function(e){
+    console.log('problem with request: ' + e.message);
+  });
+  req.write(postData);
+  console.log('_____about to call req.end______');
   req.end();
 };
 
