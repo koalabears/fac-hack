@@ -40,9 +40,12 @@ var getToken = function(code, callback){
   console.log('getToken called');
   console.log('code', code, '*******');
   console.log('p env', process.env);
-  var postData = 'client_id=' + process.env.clientId +
-    '&client_secret=' + process.env.clientSecret + '&code=' + code;
-  var options = {
+  var postData = JSON.stringify({
+    client_id: process.env.clientId,
+    client_secret: process.env.clientSecret,
+    code: code
+  });
+    var options = {
     hostname: 'github.com',
     port: 80,
     path: '/login/oauth/access_token' ,
@@ -59,6 +62,9 @@ var getToken = function(code, callback){
       callback(body);
     });
   });
+
+  req.headers['Content-Type'] = 'application/json';
+  req.headers['Accept'] = 'application/json';
   req.on('error', function(e){
     console.log('problem with request: ' + e.message);
   });
