@@ -34,6 +34,8 @@ var handler = function(req, res){
 
 var getToken = function(code, callback){
   console.log('getToken called');
+  console.log('code', code);
+  console.log('p env', process.env);
   var options = {
     hostname: 'https://github.com',
     port: 80,
