@@ -1,5 +1,7 @@
 var fs = require('fs');
 var index = fs.readFileSync(__dirname + '/../public/html/index.html');
+var index1 = fs.readFileSync(__dirname + '/../public/html/index1.html');
+var index2 = fs.readFileSync(__dirname + '/../public/html/index2.html');
 
 var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
 
@@ -32,8 +34,12 @@ var handler = function(req, res) {
     //     console.log('data', data);
     //     res.end(data);
     //   });
-
-   } else if (url === '/main.js') {
+  } else if (url === '/posts') {
+      res.writeHead(200, {
+        'Content-Type': 'text/html'
+      });
+      displayPosts(req,res);
+  } else if (url === '/main.js') {
       res.writeHead(200, {
         'Content-Type': 'text/js'
       });
@@ -45,6 +51,15 @@ var handler = function(req, res) {
     res.end();
   }
 };
+
+function displayPosts(req,res){
+  res.write(index1);
+  // var posts = getAllQuestions(function {
+  //
+  // })
+  res.write("posts");
+  res.end(index2);
+}
 
 var getToken = function(code, callback){
   console.log('getToken called');
