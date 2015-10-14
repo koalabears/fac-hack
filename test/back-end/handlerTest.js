@@ -30,7 +30,7 @@ function statusTest(code) {
   };
 }
 
-serveTest('/', statusTest(200));
+serveTest('/', statusTest(302));
 // serveTest('/main.js', statusTest(200));
 // serveTest('/style.css', statusTest(200));
 serveTest('/woah!', statusTest(404));
