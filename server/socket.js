@@ -1,3 +1,5 @@
+var redis = require('./redis.js');
+
 var io;
 
 function attachServer(server) {
@@ -13,6 +15,16 @@ function manageConnection(socket){
   });
   socket.on('chat message in',function(msg){
     //catching an event unique to this socket
+    //send to REDIS
+    redis.startDB();
+    var obj = {
+      question: msg,
+      name: "marie",
+      date: Date.now()
+    };
+    redis.postQuestion(obj, function(data) {
+      console.log(data);
+    });
     console.log('message: ',msg);
     io.emit('chat message out', msg);
 // emitting an event to al the sockets

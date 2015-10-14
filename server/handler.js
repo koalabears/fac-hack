@@ -1,14 +1,18 @@
 var fs = require('fs');
 var index = fs.readFileSync(__dirname + '/../public/html/index.html');
+
+var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
+
 var env = require('env2')('./config.env');
 var http = require('http');
 
 console.log(process.env.clientId);
 
-var handler = function(req, res){
+var handler = function(req, res) {
   var url = req.url;
   var urlArray = url.split('/');
   console.log(url);
+
   if(url === '/'){
     var idStr = '?client_id=' + process.env.clientId;
     var redirStr = '&redirect_uri=' + 'https://google.com';
@@ -28,7 +32,20 @@ var handler = function(req, res){
         console.log('data', data);
         res.end(data);
       });
-  } else {
+
+    //   getToken(urlArray[2].split('=')[1], function(data){
+    //     console.log('now in final callback!!');
+    //     console.log('data', data);
+    //     res.end(data);
+    //   });
+
+   } else if (url === '/main.js') {
+      res.writeHead(200, {
+        'Content-Type': 'text/js'
+      });
+      res.end(indexJS);
+    } else {
+
     res.writeHead(404, {
       'Content-Type': 'text/html'
     });
