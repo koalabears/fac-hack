@@ -19,15 +19,15 @@ var handler = function(req, res){
     });
     res.end();
   } else if(url.match(/^(\/auth\/)/)) {
-    console.log('request object in auth endpoint: ', req);
-    res.end('Your have logged in!!');
+    // console.log('request object in auth endpoint: ', req);
+    // res.end('Your have logged in!!');
     //
     // console.log('inside auth endpoint in handler');
-    //   getToken(urlArray[2].split('=')[1], function(data){
-    //     console.log('now in final callback!!');
-    //     console.log('data', data);
-    //     res.end(data);
-    //   });
+      getToken(urlArray[2].split('=')[1], function(data){
+        console.log('now in final callback!!');
+        console.log('data', data);
+        res.end(data);
+      });
   } else {
     res.writeHead(404, {
       'Content-Type': 'text/html'
