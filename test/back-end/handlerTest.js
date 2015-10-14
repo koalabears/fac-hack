@@ -3,7 +3,7 @@ var fs = require('fs');
 var test = require('tape');
 var handler = require('./../../server/handler.js');
 
-console.log(typeof handler);
+// TODO: user proper test messages
 
 function serveTest(url, func) {
   test("msg", function(t) {

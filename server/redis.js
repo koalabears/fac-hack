@@ -2,6 +2,29 @@ var redis = require('redis');
 var client;
 var qKey = 'questionId';
 
+var createMiddlewareCaller = function () {
+  var middlewareStore = [];
+
+  function caller () {
+    (function next(){
+      middlewareStore.shift()(next)
+    }());
+  }
+
+  caller.add = function (fn) {
+    middlewareStore.push(fn);
+    return this;
+  }
+
+  return caller;
+};
+
+function questionCount(callback) {
+  client.GET(qKey, function(err, count) {
+    callback(count);
+  })
+}
+
 function startDB() {
   client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
 }
@@ -10,7 +33,28 @@ function stopDB() {
   client.quit();
 }
 
+function getMulti() {
+  return client.multi();
+}
+
+function getAllQuestions(callback) {
+  var i = 0, j = 1;
+  client.GET(qKey, function(err, count) {
+    while(j <= count) {
+      getQuestion(j, function(qData) {
+        i += 1;
+        out.push(qData);
+        if (i === count) {
+          callback(out);
+        }
+      });
+      j += 1;
+    }
+  });
+}
+
 function postQuestion(qData, callback) {
+  // TODO: check qData for incorrect format
   client.INCR(qKey, function(err, questionId) {
     postDataAsHash(qKey +  questionId, qData, callback);
   });
@@ -29,7 +73,9 @@ function postDataAsHash(dbKey, data, callback) {
     client.HMSET(dbKey, objKey, data[objKey], function() {
       i += 1;
       if (i === objKeys.length) {
-        callback();
+        client.HGETALL(dbKey, function(err, value) {
+            callback(value);
+        });
       }
     });
   });
@@ -48,5 +94,9 @@ module.exports = {
   getQuestion: getQuestion,
   postQuestion: postQuestion,
   startDB: startDB,
-  stopDB: stopDB
+  stopDB: stopDB,
+  getAllQuestions: getAllQuestions,
+  getMulti: getMulti,
+  createCaller: createMiddlewareCaller,
+  questionCount: questionCount
 };
