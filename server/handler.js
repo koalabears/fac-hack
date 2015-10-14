@@ -32,21 +32,24 @@ var handler = function(req, res){
 
 var getToken = function(code, callback){
   var options = {
-    hostname: 'https://github.com',
+    hostname: 'github.com',
     port: 443,
     path: '/login/oauth/access_token?client_id=' + process.env.clientId +
       '&client_secret=' + process.env.clientSecret + '&code=' + code,
-    method: 'POST'
+    method: 'GET'
   };
   var req = http.request(options, function(res){
+    console.log('We have a reponce from github!');
     var body = '';
     res.on('data', function(chunk){
       body += chunk;
     });
     res.on('end', function(){
+      console.log('github response body: ', body);
       callback(body);
     });
   });
+  req.end();
 };
 
 module.exports = handler;
