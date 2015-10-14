@@ -4,7 +4,7 @@
   "description": "A web application that encourages collaboration idea sharing",
   "main": "index.js",
   "scripts": {
-    "test": "tape test/back-end/back.js"
+    "test": "istanbul cover tape test/back-end/*.js"
   },
   "repository": {
     "type": "git",
