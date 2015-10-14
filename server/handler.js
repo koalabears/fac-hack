@@ -19,11 +19,15 @@ var handler = function(req, res){
     });
     res.end();
   } else if(url.match(/^(\/auth\/)/)) {
-    console.log('inside auth endpoint in handler');
-      getToken(urlArray[2].split('=')[1], function(data){
-        console.log('now in final callback!!');
-        res.end(data);
-      });
+    console.log('request object in auth endpoint: ', req);
+    res.end('Your have logged in!!');
+    //
+    // console.log('inside auth endpoint in handler');
+    //   getToken(urlArray[2].split('=')[1], function(data){
+    //     console.log('now in final callback!!');
+    //     console.log('data', data);
+    //     res.end(data);
+    //   });
   } else {
     res.writeHead(404, {
       'Content-Type': 'text/html'
@@ -45,7 +49,7 @@ var getToken = function(code, callback){
     method: 'POST'
   };
   var req = http.request(options, function(res){
-    console.log('We have a reponce from github!');
+    console.log('We have a reponse from github!');
     var body = '';
     res.on('data', function(chunk){
       body += chunk;
