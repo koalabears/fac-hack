@@ -33,7 +33,7 @@ var handler = function(req, res){
 var getToken = function(code, callback){
   var options = {
     hostname: 'https://github.com',
-    port: 80,
+    port: 443,
     path: '/login/oauth/access_token?client_id=' + process.env.clientId +
       '&client_secret=' + process.env.clientSecret + '&code=' + code,
     method: 'POST'
