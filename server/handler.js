@@ -3,6 +3,7 @@ var redis = require('./redis.js');
 var querystring = require('querystring');
 var env = require('env2')('./config.env');
 var https = require('https');
+var jwt = require('jwt-simple');
 
 var index = fs.readFileSync(__dirname + '/../public/html/index.html');
 var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
@@ -22,22 +23,7 @@ var handler = function(req, res) {
       'Location':redirect
     });
     res.end();
-  // } else if(url.match(/^(\/auth\/)/)) {
-  //   // console.log('request object in auth endpoint: ', req);
-  //   // res.end('Your have logged in!!');
-  //   //
-  //   // console.log('inside auth endpoint in handler');
-  //     getToken(urlArray[2].split('=')[1], function(data){
-  //       console.log('now in final callback!!');
-  //       console.log('data', data);
-  //       res.end(data);
-  //     });
 
-    //   getToken(urlArray[2].split('=')[1], function(data){
-    //     console.log('now in final callback!!');
-    //     console.log('data', data);
-    //     res.end(data);
-    //   });
   } else if (url === '/tempindex') {
     console.log('posts end point');
       res.writeHead(200, {
@@ -47,13 +33,7 @@ var handler = function(req, res) {
   } else if(url.match(/^(\/auth\/)/)) {
       getToken(urlArray[2].split('=')[1], function(data){
         // TODO: check for conflict
-        var cookie = Math.floor(Math.random() * 100000000);
-        var access_token = data.split('=')[1].split('&')[0];
-        sessions[cookie] = access_token;
-        res.writeHead(200, {
-          "Set-Cookie": 'access=' + cookie
-        });
-        res.end('logged in!, access_token = ' + sessions[cookie]);
+        setToken(data, res);
       });
   } else if (url === '/posts') {
       res.writeHead(200, {
@@ -74,6 +54,20 @@ var handler = function(req, res) {
     res.end();
   }
 };
+
+function setToken(gitToken, res){
+
+  var cookie = Math.floor(Math.random() * 100000000);
+  var access_token = data.split('=')[1].split('&')[0];
+  sessions[cookie] = access_token;
+  res.writeHead(200, {
+    "Set-Cookie": 'access=' + cookie
+  });
+  res.end('logged in!, access_token = ' + sessions[cookie]);
+  var token = jwt.encode({
+    iss: 7
+  });
+}
 
 function displayPosts(req,res){
   console.log('this is display posts');
