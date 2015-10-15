@@ -13,7 +13,7 @@ function manageConnection(socket){
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
-  socket.on('chat message in',function(msg){
+  socket.on('question in',function(msg){
     //catching an event unique to this socket
     //send to REDIS
     var obj = {
@@ -23,13 +23,15 @@ function manageConnection(socket){
     };
     redis.postQuestion(obj, function(data) {
     console.log("posting question");
+    io.emit('question out', data);
+
     });
     redis.getAllQuestions(function(out) {
       console.log("getting questions");
-      
+
     });
     console.log('message: ',msg);
-    io.emit('chat message out', msg);
+
 // emitting an event to al the sockets
   });
 }

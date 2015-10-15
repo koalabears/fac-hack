@@ -45,7 +45,7 @@ function getAllQuestions(callback) {
       callback('undefined');
     }
     while(j <= count) {
-      getQuestion(j, function(qData) {
+      getQuestion(j, function(qData) { //j is the id!
         out.push(qData);
         if (out.length.toString() === count) {
           callback(out);
@@ -59,7 +59,7 @@ function getAllQuestions(callback) {
 function postQuestion(qData, callback) {
   // TODO: check qData for incorrect format
   client.INCR(qKey, function(err, questionId) {
-    postDataAsHash(qKey +  questionId, qData, function(value) {
+    postDataAsHash(qKey, questionId, qData, function(value) {
       client.SADD('questionIds', questionId, function(err, reply) {
         callback(value);
       });
@@ -69,11 +69,13 @@ function postQuestion(qData, callback) {
 
 function getQuestion(id, callback) {
   client.HGETALL(qKey + id, function(err, value) {
-      callback(value);
+    value.id = id;
+    callback(value);
   });
 }
 
-function postDataAsHash(dbKey, data, callback) {
+function postDataAsHash(dbKeyName, id, data, callback) {
+  dbKey = dbKeyName + id;
   var objKeys = Object.keys(data),
       i = 0;
   objKeys.forEach(function(objKey) {
@@ -81,6 +83,7 @@ function postDataAsHash(dbKey, data, callback) {
       i += 1;
       if (i === objKeys.length) {
         client.HGETALL(dbKey, function(err, value) {
+          value.id = id;
             callback(value);
         });
       }

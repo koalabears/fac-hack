@@ -6,7 +6,9 @@ var https = require('https');
 var jwt = require('jsonwebtoken');
 
 var index = fs.readFileSync(__dirname + '/../public/html/index.html');
+var answers = fs.readFileSync(__dirname + '/../public/html/answers.html');
 var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
+var answersJS = fs.readFileSync(__dirname + '/../public/js/answers.js');
 var indexCSS = fs.readFileSync(__dirname + '/../public/css/main.css');
 
 var sessions = {};
@@ -40,11 +42,22 @@ var handler = function(req, res) {
         'Content-Type': 'text/html'
       });
       displayPosts(req,res);
+    } else if (url.match(/^(\/question)/)) {
+        res.writeHead(200, {
+          'Content-Type': 'text/html'
+        });
+        res.end(answers);
+        // displayAnswers(req,res);
   } else if (url === '/main.js') {
       res.writeHead(200, {
         'Content-Type': 'text/js'
       });
       res.end(indexJS);
+    } else if (url === '/answers.js') {
+        res.writeHead(200, {
+          'Content-Type': 'text/js'
+        });
+        res.end(answersJS);
     } else if (url === '/main.css') {
       res.writeHead(200, {
         'Content-Type': 'text/css'
@@ -77,9 +90,17 @@ function setToken(gitToken, req, res){
   });
 }
 
+// function displayPosts(req,res){
+//   redis.getAllQuestions(function(out) {
+//       var database=JSON.stringify(out);
+//       res.end(database);
+//   });
+// }
+
 function displayPosts(req,res){
   redis.getAllQuestions(function(out) {
       var database=JSON.stringify(out);
+      console.log(out);
       res.end(database);
   });
 }
