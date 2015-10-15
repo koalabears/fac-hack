@@ -3,7 +3,7 @@ var redis = require('./redis.js');
 var querystring = require('querystring');
 var env = require('env2')('./config.env');
 var https = require('https');
-var jwt = require('jwt-simple');
+var jwt = require('jsonwebtoken');
 
 var index = fs.readFileSync(__dirname + '/../public/html/index.html');
 var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
@@ -31,6 +31,7 @@ var handler = function(req, res) {
       res.end(index);
   } else if(url.match(/^(\/auth\/)/)) {
       getToken(urlArray[2].split('=')[1], function(data){
+        console.log(data);
         // TODO: check for conflict
         setToken(data, res);
       });
@@ -58,17 +59,25 @@ var handler = function(req, res) {
   }
 };
 
-function setToken(gitToken, res){
-
+function setToken(gitToken, req, res){
+  // TODO: secret req
   var cookie = Math.floor(Math.random() * 100000000);
-  var access_token = data.split('=')[1].split('&')[0];
+  var access_token = gitToken.split('=')[1].split('&')[0];
   sessions[cookie] = access_token;
-  res.writeHead(200, {
-    "Set-Cookie": 'access=' + cookie
-  });
   res.end('logged in!, access_token = ' + sessions[cookie]);
-  var token = jwt.encode({
-    iss: 7
+  redis.userId(access_token, function(id) {
+  var token = jwt.sign({
+    auth: id,
+    agent: req.headers['user-agent'],
+    exp: Math.floor(new Date().getTime()/1000)+7*24*3600
+  }, secret);
+  res.writeHead(200, {
+    'Content-Type': 'text/html',
+    'authorization': token 
+  });
+
+
+    console.log(id);
   });
 }
 
