@@ -3,7 +3,6 @@ var redis = require('./redis.js');
 var querystring = require('querystring');
 var env = require('env2')('./config.env');
 var https = require('https');
-var jwt = require('jsonwebtoken');
 
 var index = fs.readFileSync(__dirname + '/../public/html/index.html');
 var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
@@ -24,13 +23,13 @@ var handler = function(req, res) {
       'Location':redirect
     });
     res.end();
+
   } else if (url === '/tempindex') {
       validate(req, res, serveMain);
   } else if(url.match(/^(\/auth\/)/)) {
       getToken(urlArray[2].split('=')[1], function(data){
-        console.log('!github data! ::', data);
         // TODO: check for conflict
-        setToken(data, req, res);
+        setToken(data, res);
       });
   } else if (url === '/posts') {
       res.writeHead(200, {
@@ -55,22 +54,17 @@ var handler = function(req, res) {
   }
 };
 
-function setToken(gitToken, req, res){
+function setToken(gitToken, res){
+
   var cookie = Math.floor(Math.random() * 100000000);
   var access_token = gitToken.split('=')[1].split('&')[0];
   sessions[cookie] = access_token;
-  redis.userId(access_token, function(id) {
-    var token = jwt.sign({
-      auth: id,
-      agent: req.headers['user-agent'],
-      exp: Math.floor(new Date().getTime()/1000)+7*24*3600
-    }, process.env.jwtSecret);
-    res.writeHead(302, {
-      'Content-Type': 'text/html',
-      'authorization': token,
-      'Location': '/tempindex'
-    });
-    res.end();
+  res.writeHead(200, {
+    "Set-Cookie": 'access=' + cookie
+  });
+  res.end('logged in!, access_token = ' + sessions[cookie]);
+  var token = jwt.encode({
+    iss: 7
   });
 }
 
@@ -97,6 +91,7 @@ function displayPosts(req,res){
 }
 
 var getToken = function(code, callback){
+  console.log('gitHub code: \"'+code+"\"");
   var postData = querystring.stringify({
     client_id: process.env.clientId,
     client_secret: process.env.clientSecret,
@@ -116,6 +111,12 @@ var getToken = function(code, callback){
       body += chunk;
     });
     res.on('end', function(){
+      // var access_token = ;
+      // function setCookie() {
+      //   var rnd = Math.floor(Math.random() * 100000000);
+      //   if (!sessions[rnd]) sessions[rnd] = access_token;
+      //   else setCookie();
+      // }
       callback(body);
     });
   });
