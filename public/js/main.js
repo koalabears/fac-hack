@@ -4,6 +4,7 @@ var qAll=document.getElementById('questionsAll');
 form.addEventListener('submit', emitMsg);
 
 function emitMsg(e){
+  console.log("emit me");
   e.preventDefault();
   var input = document.getElementById('inputBox');
   var newQ = document.getElementById('newQ');
@@ -12,16 +13,19 @@ function emitMsg(e){
 }
 socket.on('chat message out', function(msg){
   var username="marie";
+  console.log("chat message out");
   newQ.innerHTML += ("<div id=new> " + msg + "</div>");
   newQ.innerHTML += ("<div class=newDet>" + "Username: " + username + "<br>" + "Date: " + Date.now() + "</div>");
 });
 
 
 (function createPage() {
+  console.log("this is create page");
     var req = new XMLHttpRequest();
     req.open('GET', '/posts');
     req.onreadystatechange = function() {
       if (req.readyState === 4 && req.status === 200) {
+        console.log(JSON.parse(req.responseText));
         createPageHtml(JSON.parse(req.responseText));
       }
     };

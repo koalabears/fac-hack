@@ -44,8 +44,10 @@ function getAllQuestions(callback) {
     if (count === 0){
       callback('undefined');
     }
+    console.log("hi eoin i'm get all questions! nice to meet you", count);
     while(j <= count) {
       getQuestion(j, function(qData) {
+        // console.log(qData);
         i += 1;
         out.push(qData);
         if (i.toString() === count) {
@@ -71,6 +73,8 @@ function getQuestion(id, callback) {
 }
 
 function postDataAsHash(dbKey, data, callback) {
+  console.log(typeof data);
+  console.log("this is data", data);
   var objKeys = Object.keys(data),
       i = 0;
   objKeys.forEach(function(objKey) {
