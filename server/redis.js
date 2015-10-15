@@ -33,23 +33,14 @@ function stopDB() {
   client.quit();
 }
 
-function getMulti() {
-  return client.multi();
-}
-
 function getAllQuestions(callback) {
-  var i = 0, j = 1;
+  var j = 1;
   client.GET(qKey, function(err, count) {
     var out = [];
-    console.log("hi eoin i'm get all questions! nice to meet you", count)
     while(j <= count) {
       getQuestion(j, function(qData) {
-        console.log(qData);
-        i += 1;
         out.push(qData);
-        console.log(typeof i);
-        console.log(typeof count);
-        if (i.toString() === count) {
+        if (out.length.toString() === count) {
           callback(out);
         }
       });
@@ -104,7 +95,6 @@ module.exports = {
   startDB: startDB,
   stopDB: stopDB,
   getAllQuestions: getAllQuestions,
-  getMulti: getMulti,
   createCaller: createMiddlewareCaller,
   questionCount: questionCount
 };
