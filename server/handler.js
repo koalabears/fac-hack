@@ -26,7 +26,6 @@ var handler = function(req, res) {
     res.end();
 
   } else if (url === '/tempindex') {
-    console.log('posts end point');
       res.writeHead(200, {
         'Content-Type': 'text/html'
       });
@@ -42,13 +41,11 @@ var handler = function(req, res) {
       });
       displayPosts(req,res);
   } else if (url === '/main.js') {
-    console.log("this is frontend js");
       res.writeHead(200, {
         'Content-Type': 'text/js'
       });
       res.end(indexJS);
     } else if (url === '/main.css') {
-    console.log("this is frontend css");
       res.writeHead(200, {
         'Content-Type': 'text/css'
       });
@@ -76,8 +73,6 @@ function setToken(gitToken, res){
 }
 
 function displayPosts(req,res){
-  console.log('this is display posts');
-  // res.write(index1);
   redis.getAllQuestions(function(out) {
       var database=JSON.stringify(out);
       res.end(database);
