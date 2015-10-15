@@ -24,7 +24,7 @@ var handler = function(req, res) {
       'Location':redirect
     });
     res.end();
-  // } else if(url.match(/^(\/auth\/)/)) {
+  } else if(url.match(/^(\/auth\/)/)) {
   //   // console.log('request object in auth endpoint: ', req);
   //   // res.end('Your have logged in!!');
   //   //
@@ -35,11 +35,11 @@ var handler = function(req, res) {
   //       res.end(data);
   //     });
 
-    //   getToken(urlArray[2].split('=')[1], function(data){
-    //     console.log('now in final callback!!');
-    //     console.log('data', data);
-    //     res.end(data);
-    //   });
+      getToken(urlArray[2].split('=')[1], function(data){
+        console.log('now in final callback!!');
+        console.log('data', data);
+        res.end(data);
+      });
   } else if (url === '/posts') {
     console.log('posts end point');
       res.writeHead(200, {
@@ -75,41 +75,41 @@ function displayPosts(req,res){
 
 }
 
-// var getToken = function(code, callback){
-//   console.log('getToken called');
-//   console.log('code', code, '*******');
-//   console.log('p env', process.env);
-//   var postData = JSON.stringify({
-//     client_id: process.env.clientId,
-//     client_secret: process.env.clientSecret,
-//     code: code
-//   });
-//     var options = {
-//     hostname: 'github.com',
-//     port: 80,
-//     path: '/login/oauth/access_token' ,
-//     method: 'POST'
-//   };
-//   var req = http.request(options, function(res){
-//     console.log('We have a reponse from github!');
-//     var body = '';
-//     res.on('data', function(chunk){
-//       body += chunk;
-//     });
-//     res.on('end', function(){
-//       console.log('github response body: ', body);
-//       callback(body);
-//     });
-//   });
-//
-//   req.headers['Content-Type'] = 'application/json';
-//   req.headers['Accept'] = 'application/json';
-//   req.on('error', function(e){
-//     console.log('problem with request: ' + e.message);
-//   });
-//   req.write(postData);
-//   console.log('_____about to call req.end______');
-//   req.end();
-// };
+var getToken = function(code, callback){
+  console.log('getToken called');
+  console.log('code', code, '*******');
+  console.log('p env', process.env);
+  var postData = JSON.stringify({
+    client_id: process.env.clientId,
+    client_secret: process.env.clientSecret,
+    code: code
+  });
+    var options = {
+    hostname: 'github.com',
+    port: 80,
+    path: '/login/oauth/access_token' ,
+    method: 'POST'
+  };
+  var req = http.request(options, function(res){
+    console.log('We have a reponse from github!');
+    var body = '';
+    res.on('data', function(chunk){
+      body += chunk;
+    });
+    res.on('end', function(){
+      console.log('github response body: ', body);
+      callback(body);
+    });
+  });
+
+  req.headers['Content-Type'] = 'application/json';
+  req.headers['Accept'] = 'application/json';
+  req.on('error', function(e){
+    console.log('problem with request: ' + e.message);
+  });
+  req.write(postData);
+  console.log('_____about to call req.end______');
+  req.end();
+};
 
 module.exports = handler;
