@@ -1,5 +1,5 @@
 var fs = require('fs');
-var index = fs.readFileSync(__dirname + '/../public/html/index.html');
+var redis = require('./redis.js');
 var index1 = fs.readFileSync(__dirname + '/../public/html/index1.html');
 var index2 = fs.readFileSync(__dirname + '/../public/html/index2.html');
 
@@ -41,6 +41,7 @@ var handler = function(req, res) {
     //     res.end(data);
     //   });
   } else if (url === '/posts') {
+    console.log('posts end point');
       res.writeHead(200, {
         'Content-Type': 'text/html'
       });
@@ -61,11 +62,17 @@ var handler = function(req, res) {
 
 function displayPosts(req,res){
   res.write(index1);
-  // var posts = getAllQuestions(function {
-  //
-  // })
-  res.write("posts");
-  res.end(index2);
+  redis.getAllQuestions(function(out) {
+    console.log("this is out", out);
+    res.write(JSON.stringify(out));
+    res.end(index2);
+  });
+
+  // res.write("posts");
+  // res.write("posts");
+  // console.log("posts");
+  // res.write(posts);
+
 }
 
 var getToken = function(code, callback){

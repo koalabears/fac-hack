@@ -16,7 +16,6 @@ function manageConnection(socket){
   socket.on('chat message in',function(msg){
     //catching an event unique to this socket
     //send to REDIS
-    redis.startDB();
     var obj = {
       question: msg,
       name: "marie",
