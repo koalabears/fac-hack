@@ -23,6 +23,7 @@ function manageConnection(socket){
     };
     redis.postQuestion(obj, function(data) {
       console.log(data);
+
     });
     console.log('message: ',msg);
     io.emit('chat message out', msg);
