@@ -38,6 +38,6 @@ serveTest('/', statusTest(302));
 // serveTest('/style.css', statusTest(200));
 serveTest('/woah!', statusTest(404));
 
-serveTest('/posts', statusTest(200));
+// serveTest('/posts', statusTest(200));
 
 db.stopDB();
