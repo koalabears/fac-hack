@@ -4,8 +4,7 @@ var querystring = require('querystring');
 var env = require('env2')('./config.env');
 var https = require('https');
 
-var index1 = fs.readFileSync(__dirname + '/../public/html/index1.html');
-var index2 = fs.readFileSync(__dirname + '/../public/html/index2.html');
+var index = fs.readFileSync(__dirname + '/../public/html/index.html');
 var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
 
 var sessions = {};
@@ -23,6 +22,11 @@ var handler = function(req, res) {
       'Location':redirect
     });
     res.end();
+  } else if (url === '/tempindex') {
+      res.writeHead(200, {
+        'Content-Type': 'text/html'
+      });
+      res.end(index);
   } else if(url.match(/^(\/auth\/)/)) {
       getToken(urlArray[2].split('=')[1], function(data){
         // TODO: check for conflict
@@ -40,7 +44,6 @@ var handler = function(req, res) {
       });
       displayPosts(req,res);
   } else if (url === '/main.js') {
-    console.log("this is frontend js");
       res.writeHead(200, {
         'Content-Type': 'text/js'
       });
@@ -55,10 +58,9 @@ var handler = function(req, res) {
 };
 
 function displayPosts(req,res){
-  res.write(index1);
   redis.getAllQuestions(function(out) {
-    res.write(JSON.stringify(out));
-    res.end(index2);
+      var database=JSON.stringify(out);
+      res.end(database);
   });
 }
 
