@@ -26,10 +26,7 @@ var handler = function(req, res) {
     res.end();
 
   } else if (url === '/tempindex') {
-      res.writeHead(200, {
-        'Content-Type': 'text/html'
-      });
-      res.end(index);
+      validate(req, res, serveMain);
   } else if(url.match(/^(\/auth\/)/)) {
       getToken(urlArray[2].split('=')[1], function(data){
         // TODO: check for conflict
@@ -70,6 +67,21 @@ function setToken(gitToken, res){
   var token = jwt.encode({
     iss: 7
   });
+}
+
+function validate(req, res, callback){
+  var token = req.headers.authorization;
+  console.log(token);
+  callback(req, res);
+  // var decoded = verify(token);
+  // if(!decoded || !decoded.auth){
+  //   authFail
+// }
+}
+
+function serveMain(req, res){
+  res.writeHead(200, {'Content-Type': 'text/html'});
+  res.end(index);
 }
 
 function displayPosts(req,res){
