@@ -22,11 +22,10 @@ function manageConnection(socket){
       date: Date.now()
     };
     redis.postQuestion(obj, function(data) {
-      console.log(data);
+    console.log("posting question");
     });
     redis.getAllQuestions(function(out) {
-      console.log("this is out", out);
-      console.log(JSON.stringify(out));
+      console.log("getting questions");
     });
     console.log('message: ',msg);
     io.emit('chat message out', msg);
