@@ -3,9 +3,11 @@ var redis = require('./redis.js');
 var querystring = require('querystring');
 var env = require('env2')('./config.env');
 var https = require('https');
+var jwt = require('jwt-simple');
 
 var index = fs.readFileSync(__dirname + '/../public/html/index.html');
 var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
+var indexCSS = fs.readFileSync(__dirname + '/../public/css/main.css');
 
 var sessions = {};
 
@@ -30,13 +32,7 @@ var handler = function(req, res) {
   } else if(url.match(/^(\/auth\/)/)) {
       getToken(urlArray[2].split('=')[1], function(data){
         // TODO: check for conflict
-        var cookie = Math.floor(Math.random() * 100000000);
-        var access_token = data.split('=')[1].split('&')[0];
-        sessions[cookie] = access_token;
-        res.writeHead(200, {
-          "Set-Cookie": 'access=' + cookie
-        });
-        res.end('logged in!, access_token = ' + sessions[cookie]);
+        setToken(data, res);
       });
   } else if (url === '/posts') {
       res.writeHead(200, {
@@ -48,14 +44,33 @@ var handler = function(req, res) {
         'Content-Type': 'text/js'
       });
       res.end(indexJS);
-    } else {
-
+    } else if (url === '/main.css') {
+    console.log("this is frontend css");
+      res.writeHead(200, {
+        'Content-Type': 'text/css'
+      });
+      res.end(indexCSS);
+    }else {
     res.writeHead(404, {
       'Content-Type': 'text/html'
     });
     res.end();
   }
 };
+
+function setToken(gitToken, res){
+
+  var cookie = Math.floor(Math.random() * 100000000);
+  var access_token = data.split('=')[1].split('&')[0];
+  sessions[cookie] = access_token;
+  res.writeHead(200, {
+    "Set-Cookie": 'access=' + cookie
+  });
+  res.end('logged in!, access_token = ' + sessions[cookie]);
+  var token = jwt.encode({
+    iss: 7
+  });
+}
 
 function displayPosts(req,res){
   redis.getAllQuestions(function(out) {
