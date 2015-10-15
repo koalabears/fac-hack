@@ -47,11 +47,9 @@ function getAllQuestions(callback) {
     console.log("hi eoin i'm get all questions! nice to meet you", count);
     while(j <= count) {
       getQuestion(j, function(qData) {
-        console.log(qData);
+        // console.log(qData);
         i += 1;
         out.push(qData);
-        console.log(typeof i);
-        console.log(typeof count);
         if (i.toString() === count) {
           callback(out);
         }

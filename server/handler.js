@@ -4,8 +4,7 @@ var querystring = require('querystring');
 var env = require('env2')('./config.env');
 var https = require('https');
 
-var index1 = fs.readFileSync(__dirname + '/../public/html/index1.html');
-var index2 = fs.readFileSync(__dirname + '/../public/html/index2.html');
+var index = fs.readFileSync(__dirname + '/../public/html/index.html');
 var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
 
 var sessions = {};
@@ -23,6 +22,28 @@ var handler = function(req, res) {
       'Location':redirect
     });
     res.end();
+  // } else if(url.match(/^(\/auth\/)/)) {
+  //   // console.log('request object in auth endpoint: ', req);
+  //   // res.end('Your have logged in!!');
+  //   //
+  //   // console.log('inside auth endpoint in handler');
+  //     getToken(urlArray[2].split('=')[1], function(data){
+  //       console.log('now in final callback!!');
+  //       console.log('data', data);
+  //       res.end(data);
+  //     });
+
+    //   getToken(urlArray[2].split('=')[1], function(data){
+    //     console.log('now in final callback!!');
+    //     console.log('data', data);
+    //     res.end(data);
+    //   });
+  } else if (url === '/tempindex') {
+    console.log('posts end point');
+      res.writeHead(200, {
+        'Content-Type': 'text/html'
+      });
+      res.end(index);
   } else if(url.match(/^(\/auth\/)/)) {
       getToken(urlArray[2].split('=')[1], function(data){
         // TODO: check for conflict
@@ -56,10 +77,10 @@ var handler = function(req, res) {
 
 function displayPosts(req,res){
   console.log('this is display posts');
-  res.write(index1);
+  // res.write(index1);
   redis.getAllQuestions(function(out) {
-    res.write(JSON.stringify(out));
-    res.end(index2);
+      var database=JSON.stringify(out);
+      res.end(database);
   });
 }
 
