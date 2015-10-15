@@ -40,11 +40,16 @@ function getMulti() {
 function getAllQuestions(callback) {
   var i = 0, j = 1;
   client.GET(qKey, function(err, count) {
+    var out = [];
+    console.log("hi eoin i'm get all questions! nice to meet you", count)
     while(j <= count) {
       getQuestion(j, function(qData) {
+        console.log(qData);
         i += 1;
         out.push(qData);
-        if (i === count) {
+        console.log(typeof i);
+        console.log(typeof count);
+        if (i.toString() === count) {
           callback(out);
         }
       });
