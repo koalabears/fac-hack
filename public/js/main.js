@@ -11,6 +11,21 @@ function emitMsg(e){
   input.value = '';
 }
 socket.on('chat message out', function(msg){
+  var username="marie";
   console.log("chat message out");
-  messages.innerHTML += ("<li>"+msg+"</li>");
+  messages.innerHTML += ("<p>"+msg+username+Date.now()+"</p>");
 });
+
+
+(function createPage() {
+  console.log("this is create page");
+    var req = new XMLHttpRequest();
+    req.open('GET', '/posts');
+    req.onreadystatechange = function() {
+      if (req.readyState === 4 && req.status === 200) {
+        console.log(req.responseText);
+        // createPageHtml(JSON.parse(req.responseText), name);
+      }
+    };
+    req.send();
+  })();

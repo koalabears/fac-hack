@@ -2,6 +2,7 @@ var fs = require('fs');
 var redis = require('./redis.js');
 var index1 = fs.readFileSync(__dirname + '/../public/html/index1.html');
 var index2 = fs.readFileSync(__dirname + '/../public/html/index2.html');
+var index = fs.readFileSync(__dirname + '/../public/html/index.html');
 
 var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
 
@@ -40,6 +41,12 @@ var handler = function(req, res) {
     //     console.log('data', data);
     //     res.end(data);
     //   });
+  } else if (url === '/tempindex') {
+    console.log('posts end point');
+      res.writeHead(200, {
+        'Content-Type': 'text/html'
+      });
+      res.end(index);
   } else if (url === '/posts') {
     console.log('posts end point');
       res.writeHead(200, {
@@ -63,11 +70,10 @@ var handler = function(req, res) {
 
 function displayPosts(req,res){
   console.log('this is display posts');
-  res.write(index1);
+  // res.write(index1);
   redis.getAllQuestions(function(out) {
-    console.log("this is out", out);
-    res.write(JSON.stringify(out));
-    res.end(index2);
+      var database=JSON.stringify(out);
+      res.end(database);
   });
 
   // res.write("posts");
