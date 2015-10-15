@@ -3,6 +3,7 @@ var redis = require('./redis.js');
 var querystring = require('querystring');
 var env = require('env2')('./config.env');
 var https = require('https');
+var jwt = require('jsonwebtoken');
 
 var index = fs.readFileSync(__dirname + '/../public/html/index.html');
 var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
@@ -24,18 +25,20 @@ var handler = function(req, res) {
     });
     res.end();
 
-  } else if (url === '/tempindex') {
-      validate(req, res, serveMain);
+  } else if (url.match(/^(\/tempindex)/)) {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.end(index);
+      // validate(req, res, serveMain);
   } else if(url.match(/^(\/auth\/)/)) {
       getToken(urlArray[2].split('=')[1], function(data){
         // TODO: check for conflict
-        setToken(data, res);
+        setToken(data, req, res);
       });
-  } else if (url === '/posts') {
-      res.writeHead(200, {
-        'Content-Type': 'text/html'
+  } else if (url.match(/^(\/posts)/)) {
+      validate(req, res, function(){
+        displayPosts(req,res);
       });
-      displayPosts(req,res);
+
   } else if (url === '/main.js') {
       res.writeHead(200, {
         'Content-Type': 'text/js'
@@ -54,28 +57,63 @@ var handler = function(req, res) {
   }
 };
 
-function setToken(gitToken, res){
-
+function setToken(gitToken, req, res){
   var cookie = Math.floor(Math.random() * 100000000);
   var access_token = gitToken.split('=')[1].split('&')[0];
   sessions[cookie] = access_token;
-  res.writeHead(200, {
-    "Set-Cookie": 'access=' + cookie
-  });
-  res.end('logged in!, access_token = ' + sessions[cookie]);
-  var token = jwt.encode({
-    iss: 7
+  redis.userId(access_token, function(id) {
+    var token = jwt.sign({
+      auth: id,
+      agent: req.headers['user-agent'],
+      exp: Math.floor(new Date().getTime()/1000)+7*24*3600
+    }, process.env.jwtSecret);
+    console.log('redirect! ', token);
+    res.writeHead(302, {
+      'Content-Type': 'text/html',
+      'Location': '/tempindex?token='+token
+    });
+    res.end();
   });
 }
 
+
+
 function validate(req, res, callback){
-  var token = req.headers.authorization;
-  console.log(token);
-  callback(req, res);
+  var token = req.url.split('?')[1];
+  console.log('*************');
+  console.log(process.env.jwtSecret);
+
   // var decoded = verify(token);
+  if (verify(token)) {
+    var decoded = jwt.decode(token);
+    console.log(decoded);
+    callback(req, res);
+  } else {
+    end('nah mate!');
+  }
+
+  // jwt.decode(process.env.jwtSecret, token, function (err_, decode) {
+  //      if (err) {
+  //          return console.error(err.name, err.message);
+  //      } else {
+  //          console.log(decode);
+  //
+  //      }
+  //  });
+  // console.log(decoded);
   // if(!decoded || !decoded.auth){
   //   authFail
 // }
+}
+
+function verify(token) {
+  var decoded = false;
+  try {
+    decoded = jwt.verify(token, process.env.jwtSecret);
+  } catch (e) {
+    decoded = false; // still false
+  }
+  return decoded;
 }
 
 function serveMain(req, res){

@@ -3,6 +3,9 @@ var form = document.getElementsByTagName('form')[0];
 var qAll=document.getElementById('questionsAll');
 form.addEventListener('submit', emitMsg);
 
+var token = window.location.search.split('=')[1];
+// window.history.pushState(“string”, auth, “/#”);
+
 function emitMsg(e){
   e.preventDefault();
   var input = document.getElementById('inputBox');
@@ -20,7 +23,7 @@ socket.on('chat message out', function(msg){
 
 (function createPage() {
     var req = new XMLHttpRequest();
-    req.open('GET', '/posts');
+    req.open('GET', '/posts?'+token);
     req.onreadystatechange = function() {
       if (req.readyState === 4 && req.status === 200) {
         createPageHtml(JSON.parse(req.responseText));

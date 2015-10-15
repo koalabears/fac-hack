@@ -1,9 +1,10 @@
 var redis = require('./redis.js');
+var socketio = require('socket.io');
 
 var io;
 
 function attachServer(server) {
-  io = require('socket.io')(server);
+  io = socketio(server);
   io.on('connection', manageConnection);
 }
 //io emits event 'connection'
@@ -26,7 +27,7 @@ function manageConnection(socket){
     });
     redis.getAllQuestions(function(out) {
       console.log("getting questions");
-      
+
     });
     console.log('message: ',msg);
     io.emit('chat message out', msg);
