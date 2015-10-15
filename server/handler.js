@@ -47,6 +47,7 @@ var handler = function(req, res) {
       });
       displayPosts(req,res);
   } else if (url === '/main.js') {
+    console.log("this is frontend js");
       res.writeHead(200, {
         'Content-Type': 'text/js'
       });
@@ -61,6 +62,7 @@ var handler = function(req, res) {
 };
 
 function displayPosts(req,res){
+  console.log('this is display posts');
   res.write(index1);
   redis.getAllQuestions(function(out) {
     console.log("this is out", out);
