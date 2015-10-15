@@ -26,6 +26,7 @@ function manageConnection(socket){
     });
     redis.getAllQuestions(function(out) {
       console.log("getting questions");
+      
     });
     console.log('message: ',msg);
     io.emit('chat message out', msg);

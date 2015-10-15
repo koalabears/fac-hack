@@ -12,8 +12,9 @@ function emitMsg(e){
 }
 socket.on('chat message out', function(msg){
   var username="marie";
-  newQ.innerHTML += ("<div id=new> " + msg + "</div>");
-  newQ.innerHTML += ("<div class=newDet>" + "Username: " + username + "<br>" + "Date: " + Date.now() + "</div>");
+  newQ.innerHTML = ("<div class=newDet>" + "Username: " + username + "<br>" + "Date: " + Date.now() + "</div>")+newQ.innerHTML;
+  newQ.innerHTML = ("<div id=new> " + msg + "</div>")+newQ.innerHTML;
+
 });
 
 
