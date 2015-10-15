@@ -6,6 +6,7 @@ var https = require('https');
 
 var index = fs.readFileSync(__dirname + '/../public/html/index.html');
 var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
+var indexCSS = fs.readFileSync(__dirname + '/../public/css/main.css');
 
 var sessions = {};
 
@@ -66,8 +67,13 @@ var handler = function(req, res) {
         'Content-Type': 'text/js'
       });
       res.end(indexJS);
-    } else {
-
+    } else if (url === '/main.css') {
+    console.log("this is frontend css");
+      res.writeHead(200, {
+        'Content-Type': 'text/css'
+      });
+      res.end(indexCSS);
+    }else {
     res.writeHead(404, {
       'Content-Type': 'text/html'
     });
