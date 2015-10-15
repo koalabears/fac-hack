@@ -31,9 +31,9 @@ var handler = function(req, res) {
       res.end(index);
   } else if(url.match(/^(\/auth\/)/)) {
       getToken(urlArray[2].split('=')[1], function(data){
-        console.log(data);
+        console.log('!github data! ::', data);
         // TODO: check for conflict
-        setToken(data, res);
+        setToken(data, req, res);
       });
   } else if (url === '/posts') {
       res.writeHead(200, {
@@ -59,24 +59,21 @@ var handler = function(req, res) {
 };
 
 function setToken(gitToken, req, res){
-  // TODO: secret req
   var cookie = Math.floor(Math.random() * 100000000);
   var access_token = gitToken.split('=')[1].split('&')[0];
   sessions[cookie] = access_token;
-  res.end('logged in!, access_token = ' + sessions[cookie]);
   redis.userId(access_token, function(id) {
-  var token = jwt.sign({
-    auth: id,
-    agent: req.headers['user-agent'],
-    exp: Math.floor(new Date().getTime()/1000)+7*24*3600
-  }, secret);
-  res.writeHead(200, {
-    'Content-Type': 'text/html',
-    'authorization': token 
-  });
-
-
-    console.log(id);
+    var token = jwt.sign({
+      auth: id,
+      agent: req.headers['user-agent'],
+      exp: Math.floor(new Date().getTime()/1000)+7*24*3600
+    }, process.env.jwtSecret);
+    res.writeHead(302, {
+      'Content-Type': 'text/html',
+      'authorization': token,
+      'Location': '/tempindex'
+    });
+    res.end();
   });
 }
 
