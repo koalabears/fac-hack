@@ -11,5 +11,6 @@ function emitMsg(e){
   input.value = '';
 }
 socket.on('chat message out', function(msg){
+  console.log("chat message out");
   messages.innerHTML += ("<li>"+msg+"</li>");
 });

@@ -41,7 +41,10 @@ function getAllQuestions(callback) {
   var i = 0, j = 1;
   client.GET(qKey, function(err, count) {
     var out = [];
-    console.log("hi eoin i'm get all questions! nice to meet you", count)
+    if (count === 0){
+      callback('undefined');
+    }
+    console.log("hi eoin i'm get all questions! nice to meet you", count);
     while(j <= count) {
       getQuestion(j, function(qData) {
         console.log(qData);
