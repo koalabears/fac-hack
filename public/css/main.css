@@ -1,0 +1,17 @@
+#new {
+  font-size: 20px;
+  color: red;
+  font-style: bold;
+}
+
+.q {
+  /*font-style: emphasis;  */
+  color:red;
+}
+.newDet {
+  font-style: italic;
+}
+
+.details {
+  font-style: italic;
+}
