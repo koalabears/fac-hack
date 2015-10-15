@@ -38,19 +38,16 @@ function getMulti() {
 }
 
 function getAllQuestions(callback) {
-  var i = 0, j = 1;
+  var j = 1;
   client.GET(qKey, function(err, count) {
     var out = [];
     if (count === 0){
       callback('undefined');
     }
-    console.log("hi eoin i'm get all questions! nice to meet you", count);
     while(j <= count) {
       getQuestion(j, function(qData) {
-        // console.log(qData);
-        i += 1;
         out.push(qData);
-        if (i.toString() === count) {
+        if (out.length.toString() === count) {
           callback(out);
         }
       });
@@ -88,6 +85,10 @@ function postDataAsHash(dbKey, data, callback) {
       }
     });
   });
+}
+
+function deleteQuestion(id, callback) {
+
 }
 
 function deleteLastQuestion(callback) {
