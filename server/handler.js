@@ -1,15 +1,13 @@
 var fs = require('fs');
 var redis = require('./redis.js');
-var index1 = fs.readFileSync(__dirname + '/../public/html/index1.html');
-var index2 = fs.readFileSync(__dirname + '/../public/html/index2.html');
-var index = fs.readFileSync(__dirname + '/../public/html/index.html');
+var querystring = require('querystring');
+var env = require('env2')('./config.env');
+var https = require('https');
 
+var index = fs.readFileSync(__dirname + '/../public/html/index.html');
 var indexJS = fs.readFileSync(__dirname + '/../public/js/main.js');
 
-var env = require('env2')('./config.env');
-var http = require('http');
-
-console.log(process.env.clientId);
+var sessions = {};
 
 var handler = function(req, res) {
   var url = req.url;
@@ -17,9 +15,8 @@ var handler = function(req, res) {
   console.log(url);
 
   if(url === '/'){
-    var idStr = '?client_id=' + process.env.clientId;
-    var redirStr = '&redirect_uri=' + 'https://google.com';
-    var redirect = 'https://github.com/login/oauth/authorize'+ idStr;
+    var redirect = 'https://github.com/login/oauth/authorize' +
+      '?client_id=' + process.env.clientId;
     res.writeHead(302, {
       'Content-Type': 'text/html',
       'Location':redirect
@@ -47,8 +44,18 @@ var handler = function(req, res) {
         'Content-Type': 'text/html'
       });
       res.end(index);
+  } else if(url.match(/^(\/auth\/)/)) {
+      getToken(urlArray[2].split('=')[1], function(data){
+        // TODO: check for conflict
+        var cookie = Math.floor(Math.random() * 100000000);
+        var access_token = data.split('=')[1].split('&')[0];
+        sessions[cookie] = access_token;
+        res.writeHead(200, {
+          "Set-Cookie": 'access=' + cookie
+        });
+        res.end('logged in!, access_token = ' + sessions[cookie]);
+      });
   } else if (url === '/posts') {
-    console.log('posts end point');
       res.writeHead(200, {
         'Content-Type': 'text/html'
       });
@@ -75,49 +82,39 @@ function displayPosts(req,res){
       var database=JSON.stringify(out);
       res.end(database);
   });
-
-  // res.write("posts");
-  // res.write("posts");
-  // console.log("posts");
-  // res.write(posts);
-
 }
 
-// var getToken = function(code, callback){
-//   console.log('getToken called');
-//   console.log('code', code, '*******');
-//   console.log('p env', process.env);
-//   var postData = JSON.stringify({
-//     client_id: process.env.clientId,
-//     client_secret: process.env.clientSecret,
-//     code: code
-//   });
-//     var options = {
-//     hostname: 'github.com',
-//     port: 80,
-//     path: '/login/oauth/access_token' ,
-//     method: 'POST'
-//   };
-//   var req = http.request(options, function(res){
-//     console.log('We have a reponse from github!');
-//     var body = '';
-//     res.on('data', function(chunk){
-//       body += chunk;
-//     });
-//     res.on('end', function(){
-//       console.log('github response body: ', body);
-//       callback(body);
-//     });
-//   });
-//
-//   req.headers['Content-Type'] = 'application/json';
-//   req.headers['Accept'] = 'application/json';
-//   req.on('error', function(e){
-//     console.log('problem with request: ' + e.message);
-//   });
-//   req.write(postData);
-//   console.log('_____about to call req.end______');
-//   req.end();
-// };
+var getToken = function(code, callback){
+  console.log('gitHub code: \"'+code+"\"");
+  var postData = querystring.stringify({
+    client_id: process.env.clientId,
+    client_secret: process.env.clientSecret,
+    code: code
+  });
+
+  var options = {
+    hostname: 'github.com',
+    path: '/login/oauth/access_token' ,
+    method: 'POST'
+  };
+
+  var req = https.request(options, function(res){
+    console.log('github return statusCode: ' + res.statusCode);
+    var body = '';
+    res.on('data', function(chunk){
+      body += chunk;
+    });
+    res.on('end', function(){
+      // var access_token = ;
+      // function setCookie() {
+      //   var rnd = Math.floor(Math.random() * 100000000);
+      //   if (!sessions[rnd]) sessions[rnd] = access_token;
+      //   else setCookie();
+      // }
+      callback(body);
+    });
+  });
+  req.end(postData);
+};
 
 module.exports = handler;
