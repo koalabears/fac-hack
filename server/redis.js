@@ -7,14 +7,14 @@ var createMiddlewareCaller = function () {
 
   function caller () {
     (function next(){
-      middlewareStore.shift()(next)
+      middlewareStore.shift()(next);
     }());
   }
 
   caller.add = function (fn) {
     middlewareStore.push(fn);
     return this;
-  }
+  };
 
   return caller;
 };
@@ -22,7 +22,7 @@ var createMiddlewareCaller = function () {
 function questionCount(callback) {
   client.GET(qKey, function(err, count) {
     callback(count);
-  })
+  });
 }
 
 function startDB() {
@@ -63,6 +63,8 @@ function getQuestion(id, callback) {
 }
 
 function postDataAsHash(dbKey, data, callback) {
+  console.log(typeof data);
+  console.log("this is data", data);
   var objKeys = Object.keys(data),
       i = 0;
   objKeys.forEach(function(objKey) {
@@ -70,6 +72,7 @@ function postDataAsHash(dbKey, data, callback) {
       i += 1;
       if (i === objKeys.length) {
         client.HGETALL(dbKey, function(err, value) {
+          // return value;
             callback(value);
         });
       }
@@ -80,9 +83,9 @@ function postDataAsHash(dbKey, data, callback) {
 function deleteLastQuestion(callback) {
   client.DECR('questionId', function(err, id) {
     client.del('questionId' + (id+1), function(err, num) {
-      callback()
+      callback();
     });
-  })
+  });
 }
 
 module.exports = {
