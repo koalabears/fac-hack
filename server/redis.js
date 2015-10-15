@@ -74,8 +74,6 @@ function getQuestion(id, callback) {
 }
 
 function postDataAsHash(dbKey, data, callback) {
-  console.log(typeof data);
-  console.log("this is data", data);
   var objKeys = Object.keys(data),
       i = 0;
   objKeys.forEach(function(objKey) {

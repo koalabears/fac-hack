@@ -46,7 +46,6 @@ var handler = function(req, res) {
       });
       res.end(indexJS);
     } else if (url === '/main.css') {
-    console.log("this is frontend css");
       res.writeHead(200, {
         'Content-Type': 'text/css'
       });
