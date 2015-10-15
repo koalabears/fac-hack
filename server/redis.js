@@ -38,18 +38,16 @@ function getMulti() {
 }
 
 function getAllQuestions(callback) {
-  var i = 0, j = 1;
+  var j = 1;
   client.GET(qKey, function(err, count) {
     var out = [];
     if (count === 0){
       callback('undefined');
     }
-    console.log("count", count);
     while(j <= count) {
       getQuestion(j, function(qData) {
-        i += 1;
         out.push(qData);
-        if (i.toString() === count) {
+        if (out.length.toString() === count) {
           callback(out);
         }
       });
@@ -61,7 +59,11 @@ function getAllQuestions(callback) {
 function postQuestion(qData, callback) {
   // TODO: check qData for incorrect format
   client.INCR(qKey, function(err, questionId) {
-    postDataAsHash(qKey +  questionId, qData, callback);
+    postDataAsHash(qKey +  questionId, qData, function(value) {
+      client.SADD('questionIds', questionId, function(err, reply) {
+        callback(value);
+      });
+    });
   });
 }
 
@@ -79,7 +81,6 @@ function postDataAsHash(dbKey, data, callback) {
       i += 1;
       if (i === objKeys.length) {
         client.HGETALL(dbKey, function(err, value) {
-          // return value;
             callback(value);
         });
       }
@@ -87,10 +88,27 @@ function postDataAsHash(dbKey, data, callback) {
   });
 }
 
+function deleteQuestion(id, callback) {
+  client.SISMEMBER('questionIds', id, function(err, reply) {
+    client.del(qKey, id, function(err, rep) {
+      client.SREM('questionIds', id, callback);
+    });
+  });
+}
+
 function deleteLastQuestion(callback) {
-  client.DECR('questionId', function(err, id) {
-    client.del('questionId' + (id+1), function(err, num) {
-      callback();
+  client.GET(qKey, function(err, count) {
+    deleteQuestion(count, callback);
+  });
+}
+
+function userId(token, callback) {
+  client.get('user'+token, function(err, reply) {
+    if (reply) callback(reply);
+    else client.INCR('userCount', function(err, reply) {
+      client.SET('user'+token, reply, function(err, reply) {
+        callback(reply);
+      });
     });
   });
 }
@@ -104,5 +122,7 @@ module.exports = {
   getAllQuestions: getAllQuestions,
   getMulti: getMulti,
   createCaller: createMiddlewareCaller,
-  questionCount: questionCount
+  questionCount: questionCount,
+  userId: userId,
+  deleteQuestion: deleteQuestion
 };
