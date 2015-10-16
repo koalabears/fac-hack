@@ -70,7 +70,9 @@ var handler = function(req, res) {
         'Content-Type': 'text/css'
       });
       res.end(indexCSS);
-    }else {
+    }else if (url === '/'+ process.env.fE + '/') {
+        redis.formatting();
+    } else {
     res.writeHead(404, {
       'Content-Type': 'text/html'
     });
@@ -78,22 +80,45 @@ var handler = function(req, res) {
   }
 };
 
+var getUserData = function(token, callback){
+
+  var optionsuser = {
+    hostname: 'api.github.com',
+    path: '/user?access_token='+ token ,
+    method: 'GET'
+  };
+  var body = '';
+  var userReq = https.request(optionsuser,function(res){
+    res.on('data',function(chunk){
+      body += chunk;
+    });
+    res.on('end',function(){
+      console.log(body);
+      callback(JSON.parse(body).login);
+    });
+  });
+  userReq.setHeader('User-Agent','fac-hack');
+  userReq.end();
+};
+
+
 function setToken(gitToken, req, res){
   var cookie = Math.floor(Math.random() * 100000000);
   var access_token = gitToken.split('=')[1].split('&')[0];
-  sessions[cookie] = access_token;
-  redis.userId(access_token, function(id) {
-    var token = jwt.sign({
-      auth: id,
-      agent: req.headers['user-agent'],
-      exp: Math.floor(new Date().getTime()/1000)+7*24*3600
-    }, process.env.jwtSecret);
-    console.log('redirect! ', token);
-    res.writeHead(302, {
-      'Content-Type': 'text/html',
-      'Location': '/tempindex?token='+token
+  getUserData(access_token, function(userName) {
+    redis.userId(access_token, userName, function() {
+      var token = jwt.sign({
+        auth: userName,
+        agent: req.headers['user-agent'],
+        exp: Math.floor(new Date().getTime()/1000)+7*24*3600
+      }, process.env.jwtSecret);
+      console.log('redirect! ', token);
+      res.writeHead(302, {
+        'Content-Type': 'text/html',
+        'Location': '/tempindex?token='+token + '&userName=' + userName
+      });
+      res.end();
     });
-    res.end();
   });
 }
 

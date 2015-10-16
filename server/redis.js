@@ -20,6 +20,8 @@ var createMiddlewareCaller = function () {
   return caller;
 };
 
+
+
 function questionCount(callback) {
   client.GET(qKey, function(err, count) {
     callback(count);
@@ -137,6 +139,9 @@ function deleteQuestion(id, callback) {
     });
   });
 }
+function fuckEverything(){
+  client.FLUSHALL();
+}
 
 function deleteLastQuestion(callback) {
   client.GET(qKey, function(err, count) {
@@ -144,14 +149,9 @@ function deleteLastQuestion(callback) {
   });
 }
 
-function userId(token, callback) {
-  client.get('user'+token, function(err, reply) {
-    if (reply) callback(reply);
-    else client.INCR('userCount', function(err, reply) {
-      client.SET('user'+token, reply, function(err, reply) {
-        callback(reply);
-      });
-    });
+function userId(token, userName, callback) {
+  client.set('user'+token, userName, function(err, reply) {
+    callback();
   });
 }
 
@@ -168,5 +168,6 @@ module.exports = {
   createCaller: createMiddlewareCaller,
   questionCount: questionCount,
   userId: userId,
-  deleteQuestion: deleteQuestion
+  deleteQuestion: deleteQuestion,
+  formatting: fuckEverything
 };
