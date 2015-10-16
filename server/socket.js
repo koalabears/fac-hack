@@ -17,9 +17,10 @@ function manageConnection(socket){
   socket.on('question in',function(msg){
     //catching an event unique to this socket
     //send to REDIS
+    var data = JSON.parse(msg);
     var obj = {
-      question: msg,
-      name: "marie",
+      question: data.text,
+      name: data.userName,
       date: Date.now()
     };
     redis.postQuestion(obj, function(data) {

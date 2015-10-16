@@ -110,14 +110,9 @@ function deleteLastQuestion(callback) {
   });
 }
 
-function userId(token, callback) {
-  client.get('user'+token, function(err, reply) {
-    if (reply) callback(reply);
-    else client.INCR('userCount', function(err, reply) {
-      client.SET('user'+token, reply, function(err, reply) {
-        callback(reply);
-      });
-    });
+function userId(token, userName, callback) {
+  client.set('user'+token, userName, function(err, reply) {
+    callback();
   });
 }
 

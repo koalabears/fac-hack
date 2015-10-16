@@ -3,18 +3,23 @@ var form = document.getElementsByTagName('form')[0];
 var qAll=document.getElementById('questionsAll');
 form.addEventListener('submit', emitMsg);
 
-var token = window.location.search.split('=')[1];
+var token = window.location.search.split('=')[1].split('&')[0];
+var userName = window.location.search.split('=')[2];
 
 function emitMsg(e){
   e.preventDefault();
+
   var input = document.getElementById('inputBox');
   var newQ = document.getElementById('newQ');
-  socket.emit('question in', input.value.replace(/<.*>/g, ''));
+  var msg = JSON.stringify({
+    text: input.value.replace(/<.*>/g, ''),
+    userName: userName
+  });
+  socket.emit('question in', msg);
   input.value = '';
 }
 socket.on('question out', function(msg){
-  var username="marie";
-  newQ.innerHTML = ("<div class=newDet>" + "Username: " + username + "<br>" + "Date: " + Date.now() + "</div>")+newQ.innerHTML;
+  newQ.innerHTML = ("<div class=newDet>" + "Username: " + userName + "<br>" + "Date: " + Date.now() + "</div>")+newQ.innerHTML;
   newQ.innerHTML = ("<div id=new> <a href='/question" + "'>"  + msg.question + "</a></div>")+newQ.innerHTML;
 
 });
