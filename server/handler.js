@@ -36,7 +36,12 @@ var handler = function(req, res) {
         // TODO: check for conflict
         setToken(data, req, res);
       });
+    } else if (url==='/posts') { //remove this else if later
+      console.log("handler");
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      displayPosts(req,res);
   } else if (url.match(/^(\/posts)/)) {
+    console.log("handler");
       validate(req, res, function(){
         displayPosts(req,res);
       });
@@ -45,7 +50,11 @@ var handler = function(req, res) {
           'Content-Type': 'text/html'
         });
         res.end(answers);
-        // displayAnswers(req,res);
+      } else if (url=== '/answers'){
+          res.writeHead(200, {
+            'Content-Type': 'text/html'
+          });
+          displayAnswers(req,res);
   } else if (url === '/main.js') {
       res.writeHead(200, {
         'Content-Type': 'text/js'
@@ -100,7 +109,7 @@ function validate(req, res, callback){
     console.log(decoded);
     callback(req, res);
   } else {
-    end('nah mate!');
+    res.end('nah mate!');
   }
 
   // jwt.decode(process.env.jwtSecret, token, function (err_, decode) {
@@ -134,10 +143,20 @@ function serveMain(req, res){
 
 
 function displayPosts(req,res){
+  console.log("displayPosts is here");
   redis.getAllQuestions(function(out) {
       var database=JSON.stringify(out);
       console.log(out);
       res.end(database);
+  });
+}
+
+function displayAnswers(req,res){
+  console.log("displaying answers");
+  redis.getAllAnswers(function(out) {
+      var database=JSON.stringify(out);
+      // console.log('ans out:', );
+        res.end(database);
   });
 }
 

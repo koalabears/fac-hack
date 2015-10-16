@@ -24,7 +24,8 @@ function manageConnection(socket){
     };
     redis.postQuestion(obj, function(data) {
     console.log("posting question");
-    io.emit('question out', data);
+    console.log(data);
+    io.emit('question out', data.question);
 
     });
     redis.getAllQuestions(function(out) {
@@ -35,6 +36,32 @@ function manageConnection(socket){
 
 // emitting an event to al the sockets
   });
+  socket.on('answer in',function(answer, url){
+    console.log(url);
+    //catching an event unique to this socket
+    //send to REDIS
+    var obj = {
+      answer: answer,
+      name: "naaz",
+      date: Date.now(),
+      url: url
+    };
+    redis.postAnswer(obj, function(data) {
+    console.log("posting answer");
+    console.log(data);
+    io.emit('answer out', data.answer);
+
+    });
+    redis.getAllAnswers(function(out) {
+      console.log("getting answers");
+
+    });
+    console.log('message: ',answer);
+
+  // emitting an event to al the sockets
+  });
+
+
 }
 
 module.exports = attachServer;

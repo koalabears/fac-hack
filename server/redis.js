@@ -1,6 +1,7 @@
 var redis = require('redis');
 var client;
 var qKey = 'questionId';
+var aKey = 'answerId';
 
 var createMiddlewareCaller = function () {
   var middlewareStore = [];
@@ -56,11 +57,41 @@ function getAllQuestions(callback) {
   });
 }
 
+function getAllAnswers(callback) {
+  var j = 1;
+  client.GET(aKey, function(err, count) {
+    var out = [];
+    if (count === 0){
+      callback('undefined');
+    }
+    while(j <= count) {
+      getAnswer(j, function(aData) { //j is the id!
+        out.push(aData);
+        if (out.length.toString() === count) {
+          callback(out);
+        }
+      });
+      j += 1;
+    }
+  });
+}
+
 function postQuestion(qData, callback) {
   // TODO: check qData for incorrect format
   client.INCR(qKey, function(err, questionId) {
     postDataAsHash(qKey, questionId, qData, function(value) {
       client.SADD('questionIds', questionId, function(err, reply) {
+        callback(value);
+      });
+    });
+  });
+}
+
+function postAnswer(aData, callback) {
+  // TODO: check qData for incorrect format
+  client.INCR(aKey, function(err, answersId) {
+    postDataAsHash(aKey, answersId, aData, function(value) {
+      client.SADD('answerIds', answersId, function(err, reply) {
         callback(value);
       });
     });
@@ -73,6 +104,14 @@ function getQuestion(id, callback) {
     callback(value);
   });
 }
+
+function getAnswer(id, callback) {
+  client.HGETALL(aKey + id, function(err, value) {
+    value.id = id;
+    callback(value);
+  });
+}
+
 
 function postDataAsHash(dbKeyName, id, data, callback) {
   dbKey = dbKeyName + id;
@@ -120,9 +159,11 @@ module.exports = {
   deleteLastQuestion: deleteLastQuestion,
   getQuestion: getQuestion,
   postQuestion: postQuestion,
+  postAnswer: postAnswer,
   startDB: startDB,
   stopDB: stopDB,
   getAllQuestions: getAllQuestions,
+  getAllAnswers: getAllAnswers,
   getMulti: getMulti,
   createCaller: createMiddlewareCaller,
   questionCount: questionCount,
