@@ -19,6 +19,8 @@ var createMiddlewareCaller = function () {
   return caller;
 };
 
+
+
 function questionCount(callback) {
   client.GET(qKey, function(err, count) {
     callback(count);
@@ -98,6 +100,9 @@ function deleteQuestion(id, callback) {
     });
   });
 }
+function fuckEverything(){
+  client.FLUSHALL();
+}
 
 function deleteLastQuestion(callback) {
   client.GET(qKey, function(err, count) {
@@ -127,5 +132,6 @@ module.exports = {
   createCaller: createMiddlewareCaller,
   questionCount: questionCount,
   userId: userId,
-  deleteQuestion: deleteQuestion
+  deleteQuestion: deleteQuestion,
+  formatting: fuckEverything
 };

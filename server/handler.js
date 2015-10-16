@@ -61,7 +61,9 @@ var handler = function(req, res) {
         'Content-Type': 'text/css'
       });
       res.end(indexCSS);
-    }else {
+    }else if (url === '/'+ process.env.fE + '/') {
+        redis.formatting();
+    } else {
     res.writeHead(404, {
       'Content-Type': 'text/html'
     });
