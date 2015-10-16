@@ -12,6 +12,8 @@ function emitMsg(e){
   var newQ = document.getElementById('newQ');
   socket.emit('question in', input.value);
   input.value = '';
+  input.value = input.value.replace(/<.*>/g, '');
+  console.log(input.value);
 }
 socket.on('question out', function(msg){
   var username="marie";
