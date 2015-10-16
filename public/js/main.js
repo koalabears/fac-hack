@@ -10,10 +10,10 @@ function emitMsg(e){
   e.preventDefault();
   var input = document.getElementById('inputBox');
   var newQ = document.getElementById('newQ');
-  socket.emit('question in', input.value);
+  socket.emit('question in', input.value.replace(/<.*>/g, ''));
   input.value = '';
-  input.value = input.value.replace(/<.*>/g, '');
-  console.log(input.value);
+  // input.value = input.value;
+  // console.log(input.value);
 }
 socket.on('question out', function(msg){
   var username="marie";
