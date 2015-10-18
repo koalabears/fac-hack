@@ -22,7 +22,7 @@ function emitMsg(e){
 socket.on('question out', function(msg){
 
   newQ.innerHTML = ("<div class=newDet>" + "Username: " + userName + "<br>" + "Date: " + Date.now() + "</div>")+newQ.innerHTML;
-  newQ.innerHTML = ("<div id=new> <a href='/question" + "'>"  + msg.question + "</a></div>")+newQ.innerHTML;
+  newQ.innerHTML = ("<div id=new> <a href='/question" + "'>"  + msg + "</a></div>")+newQ.innerHTML;
 
 });
 
