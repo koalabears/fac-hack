@@ -26,7 +26,7 @@ function manageConnection(socket){
     redis.postQuestion(obj, function(data) {
     console.log("posting question");
     console.log(data);
-    io.emit('question out', data.question);
+    io.emit('question out', data);
 
     });
     redis.getAllQuestions(function(out) {
