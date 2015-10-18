@@ -51,7 +51,7 @@ function emitAnswer(e){
 socket.on('answer out', function(msg){
   var username="naaz";
   newA.innerHTML = ("<div class=newDet>" + "Username: " + username + "<br>" + "Date: " + Date.now() + "</div>")+newA.innerHTML;
-  newA.innerHTML = ("<div id=new> <a href='/question" + "'>"  + msg + "</a></div>")+newA.innerHTML;
+  newA.innerHTML = ("<div id=new>" + msg + "</div>")+newA.innerHTML;
 });
 
 console.log("hello");
