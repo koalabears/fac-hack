@@ -24,6 +24,7 @@ socket.on('question out', function(msg){
   newQ.innerHTML = ("<div class=newDet>" + "Username: " + userName + "<br>" + "Date: " + Date.now() + "</div>")+newQ.innerHTML;
   newQ.innerHTML = ("<div id=new> <a href='/question" + msg.id + "'>"  + msg.question + "</a></div>")+newQ.innerHTML;
 
+
 });
 
 
