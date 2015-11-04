@@ -7,7 +7,7 @@ A space for ENTHUSIASTS, ENTREPRENEURS and DEVELOPERS to discuss, improve and pr
 
 TUTORIAL BASED README
 
-Heroku link: http://guarded-island-6167.herokuapp.com/
+Link to Heroku: http://guarded-island-6167.herokuapp.com/
 
 ## Set-up
 
